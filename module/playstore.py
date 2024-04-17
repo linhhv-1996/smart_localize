@@ -20,7 +20,7 @@ def get_or_default(obj, indices, fallback='', post=lambda x: x):
 
 async def get_play_store(package_name):
     url = f"{google_play_url}/store/apps/details?id={package_name}{hlgl}"
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
         async with session.get(url) as response:
             content = await response.text()
 
@@ -59,13 +59,8 @@ async def get_play_store(package_name):
         "friendly": get_or_default(json_data, [1, 2, 9, 0], fallback),
         "published": get_or_default(json_data, [1, 2, 10, 0], fallback)
     }
-
-    pprint.pp(result)
-
+    
     return result
 
-
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-asyncio.run(get_play_store('com.simulationcurriculum.skysafari7pro'))
 
 # get_play_store('com.lilithgame.roc.gp')
