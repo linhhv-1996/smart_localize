@@ -156,9 +156,16 @@ async def receive_msg(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         [InlineKeyboardButton("Option 3", callback_data="3")],
     ]
 
+    plot_func()
+
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+    await update.message.reply_photo('plot_name.png')
+
+    import os
+    os.remove('plot_name.png')   
+    # bot.send_photo(message.chat.id, photo=open('plot_name.png', 'rb'))
 
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -175,6 +182,28 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Display a help message"""
     await update.message.reply_text("Use /quiz, /poll or /preview to test this bot.")
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def plot_func():
+    with open('data.txt', 'r') as f:
+        lines = f.readlines()
+        x = [float(line.split()[0]) for line in lines]
+        y = [float(line.split()[1]) for line in lines]
+        # x_tik = [v + 1 for v in x]
+
+    # plt.rcParams['ytick.right'] = plt.rcParams['ytick.labelright'] = True
+    # plt.rcParams['ytick.left'] = plt.rcParams['ytick.labelleft'] = False
+    plt.title("Daily Installs")
+    plt.xlabel("Date")
+    plt.ylabel("Installs")
+    # plt.xticks(x, x_tik)
+    # plt.tick_params(axis='x', which='major', labelsize=3)
+    plt.plot(x, y)
+    plt.savefig('plot_name.png', dpi = 300)
 
 
 def main() -> None:
