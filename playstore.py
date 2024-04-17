@@ -4,6 +4,7 @@ import aiohttp
 import pprint
 
 google_play_url = 'https://play.google.com'
+hlgl = '&hl=en_GB&gl=us'
 
 def get_or_default(obj, indices, fallback='', post=lambda x: x):
     i = 0
@@ -18,7 +19,7 @@ def get_or_default(obj, indices, fallback='', post=lambda x: x):
 
 
 async def get_play_store(package_name):
-    url = f"{google_play_url}/store/apps/details?id={package_name}"
+    url = f"{google_play_url}/store/apps/details?id={package_name}{hlgl}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             content = await response.text()
@@ -41,7 +42,7 @@ async def get_play_store(package_name):
         "name": get_or_default(json_data, [1, 2, 0, 0], fallback),
         "category": get_or_default(json_data, [1, 2, 79, 0, 0, 0], fallback),
         "publisher": get_or_default(json_data, [1, 2, 37, 0], fallback),
-        "store": f"{google_play_url}{get_or_default(json_data, [1, 2, 68, 1, 4, 2], '')}&gl=US",
+        "store": f"{google_play_url}{get_or_default(json_data, [1, 2, 68, 1, 4, 2], '')}{hlgl}",
         "email": get_or_default(json_data, [1, 2, 69, 1, 0], fallback),
         "installs": get_or_default(json_data, [1, 2, 13, 0], fallback),
         "totalinstalls": get_or_default(json_data, [1, 2, 13, 2], fallback, lambda n: f"{n:,}"),
@@ -65,6 +66,6 @@ async def get_play_store(package_name):
 
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-asyncio.run(get_play_store('com.broken.screen.wallpaper.prank.crackedscreen'))
+asyncio.run(get_play_store('com.simulationcurriculum.skysafari7pro'))
 
 # get_play_store('com.lilithgame.roc.gp')
