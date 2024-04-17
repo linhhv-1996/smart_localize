@@ -1,7 +1,9 @@
 import json
 import asyncio
 import aiohttp
+import pprint
 
+google_play_url = 'https://play.google.com'
 
 def get_or_default(obj, indices, fallback='', post=lambda x: x):
     i = 0
@@ -16,7 +18,7 @@ def get_or_default(obj, indices, fallback='', post=lambda x: x):
 
 
 async def get_play_store(package_name):
-    url = f"https://play.google.com/store/apps/details?id={package_name}"
+    url = f"{google_play_url}/store/apps/details?id={package_name}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             content = await response.text()
@@ -37,6 +39,10 @@ async def get_play_store(package_name):
 
     result = {
         "name": get_or_default(json_data, [1, 2, 0], fallback),
+        "category": get_or_default(json_data, [1, 2, 79, 0, 0, 0], fallback),
+        "publisher": get_or_default(json_data, [1, 2, 37, 0], fallback),
+        "store": f"{google_play_url}{get_or_default(json_data, [1, 2, 68, 1, 4, 2], '')}&gl=US",
+        "email": get_or_default(json_data, [1, 2, 69, 1, 0], fallback),
         "installs": get_or_default(json_data, [1, 2, 13, 0], fallback),
         "totalinstalls": get_or_default(json_data, [1, 2, 13, 2], fallback, lambda n: f"{n:,}"),
         "shortinstalls": get_or_default(json_data, [1, 2, 13, 3], fallback),
@@ -48,16 +54,17 @@ async def get_play_store(package_name):
         "minsdk": get_or_default(json_data, [1, 2, 140, 1, 1, 0, 0, 0], fallback),
         "rating": get_or_default(json_data, [1, 2, 51, 0, 0], fallback),
         "floatrating": get_or_default(json_data, [1, 2, 51, 0, 1], fallback),
+        "numrating": get_or_default(json_data, [1, 2, 51, 2, 0], fallback),
         "friendly": get_or_default(json_data, [1, 2, 9, 0], fallback),
         "published": get_or_default(json_data, [1, 2, 10, 0], fallback)
     }
 
-    print(result)
+    pprint.pp(result)
 
     return result
 
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-asyncio.run(get_play_store('com.intuit.turbotax.mobile'))
+asyncio.run(get_play_store('com.broken.screen.wallpaper.prank.crackedscreen'))
 
 # get_play_store('com.lilithgame.roc.gp')
