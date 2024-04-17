@@ -38,7 +38,7 @@ async def get_play_store(package_name):
     fallback = 'Varies with device'
 
     result = {
-        "name": get_or_default(json_data, [1, 2, 0], fallback),
+        "name": get_or_default(json_data, [1, 2, 0, 0], fallback),
         "category": get_or_default(json_data, [1, 2, 79, 0, 0, 0], fallback),
         "publisher": get_or_default(json_data, [1, 2, 37, 0], fallback),
         "store": f"{google_play_url}{get_or_default(json_data, [1, 2, 68, 1, 4, 2], '')}&gl=US",
@@ -46,7 +46,7 @@ async def get_play_store(package_name):
         "installs": get_or_default(json_data, [1, 2, 13, 0], fallback),
         "totalinstalls": get_or_default(json_data, [1, 2, 13, 2], fallback, lambda n: f"{n:,}"),
         "shortinstalls": get_or_default(json_data, [1, 2, 13, 3], fallback),
-        "version": get_or_default(json_data, [1, 2, 140, 0, 0], fallback),
+        "version": get_or_default(json_data, [1, 2, 140, 0, 0, 0], fallback),
         "updated": get_or_default(json_data, [1, 2, 145, 0, 0], fallback),
         "targetandroid": get_or_default(json_data, [1, 2, 140, 1, 0, 0, 1], fallback),
         "targetsdk": get_or_default(json_data, [1, 2, 140, 1, 0, 0, 0], fallback),
